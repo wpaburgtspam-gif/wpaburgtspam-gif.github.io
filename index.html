@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="nl" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grote dictee der Nederlandse taal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Confetti JS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .serif-title {
+            font-family: 'Playfair Display', serif;
+        }
+        .stanza-card {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-950 via-red-900 to-amber-950 text-slate-100 min-h-full flex flex-col justify-between selection:bg-amber-500 selection:text-red-950">
+
+    <!-- Header / Navbar -->
+    <header class="w-full py-6 px-4 text-center border-b border-red-800/40 bg-red-950/60 backdrop-blur-md sticky top-0 z-50 shadow-lg">
+        <div class="max-w-3xl mx-auto flex items-center justify-center gap-3">
+            <span class="text-3xl animate-bounce">📜</span>
+            <h1 class="serif-title text-2xl md:text-3xl font-bold tracking-wide text-amber-300 drop-shadow">
+                Grote Dictee der Nederlandse Taal
+            </h1>
+            <span class="text-3xl animate-bounce">🎁</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-2xl mx-auto px-4 py-8 md:py-12 flex-grow flex flex-col gap-6">
+
+        <!-- Intro Banner -->
+        <div class="bg-red-900/40 border border-amber-500/30 rounded-2xl p-6 shadow-xl backdrop-blur-sm text-center">
+            <h2 class="serif-title text-xl font-bold text-amber-200 mb-2">Welkom bij het Rijm-Dictee!</h2>
+        </div>
+
+        <!-- Poem Stanzas Container -->
+        <div id="poem-container" class="flex flex-col gap-6">
+
+            <!-- Stanza 1 (Always Visible) -->
+            <div id="stanza-1" class="stanza-card bg-slate-900/80 border border-red-700/50 rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-amber-400 to-amber-600"></div>
+           
+                
+                <div class="serif-title text-lg md:text-xl text-slate-100 space-y-3 leading-relaxed italic mb-6">
+                    <p>Beste Riccardo,</p>
+                    <p>Toen Sinterklaas laatst op zijn benen stond,<br>
+                    En eens <span class="text-amber-300 underline decoration-amber-500/50 decoration-2 font-normal not-italic font-sans px-1 rounded bg-amber-400/15">(rondneuzen)</span> in het Eindhovense grond,</p>
+                    <p>Zag hij een prachtig appartement staan,<br>
+                    Waar jij met Vera bent gaan wonen, zo te zien en verstaan.</p>
+                </div>
+
+                <!-- Input Box for Stanza 1 -->
+                <div id="input-area-1" class="bg-red-950/40 border border-red-800/60 rounded-xl p-4 transition-all">
+                    <label for="input-1" class="block text-xs font-medium text-amber-200/90 mb-2">
+                        Vraag: Wat is de juiste verleden tijd van <code class="bg-red-900 px-1.5 py-0.5 rounded text-amber-300">rondneuzen</code> in deze zin? (enkelvoud)
+                    </label>
+                    <div class="flex gap-3">
+                        <input type="text" id="input-1" placeholder="Typ je antwoord hier..." 
+                            class="flex-grow bg-slate-950/80 border border-red-700/60 rounded-lg px-4 py-2.5 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition">
+                        <button onclick="checkAnswer(1)" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-red-950 font-bold px-5 py-2.5 rounded-lg text-sm shadow-md transition transform active:scale-95 cursor-pointer">
+                            Controleer
+                        </button>
+                    </div>
+                    <p id="feedback-1" class="text-xs mt-2 hidden"></p>
+                </div>
+
+                <!-- Success State 1 -->
+                <div id="success-1" class="hidden mt-4 bg-emerald-950/60 border border-emerald-600/50 rounded-xl p-3 text-emerald-200 text-sm flex items-center gap-2">
+                    <span>🎉</span> <span>Goed zo!</span>
+                </div>
+            </div>
+
+            <!-- Stanza 2 (Hidden Initially) -->
+            <div id="stanza-2" class="stanza-card hidden opacity-0 translate-y-4 bg-slate-900/80 border border-red-700/50 rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-amber-400 to-amber-600"></div>
+
+                
+                <div class="serif-title text-lg md:text-xl text-slate-100 space-y-3 leading-relaxed italic mb-6">
+                    <p>Maar niet alleen de liefde kreeg een mooi plekje in dit huis,<br>
+                    Ook de groene natuur voelt zich hier direct thuis!</p>
+                    <p>Sinterklaas keek eens goed naar jouw eigen botanische paradijs:<br>
+                    Die indrukwekkende plantenkast is een waar meesterwerk en <span class="text-amber-300 underline decoration-amber-500/50 decoration-2 font-normal not-italic font-sans px-1 rounded bg-amber-400/15">(verdienen)</span> een prijs.</p>
+                </div>
+
+                <!-- Input Box for Stanza 2 -->
+                <div id="input-area-2" class="bg-red-950/40 border border-red-800/60 rounded-xl p-4 transition-all">
+                    <label for="input-2" class="block text-xs font-medium text-amber-200/90 mb-2">
+                        Vraag: Vervoeg <code class="bg-red-900 px-1.5 py-0.5 rounded text-amber-300">verdienen</code> in de tegenwoordige tijd (derde persoon enkelvoud).
+                    </label>
+                    <div class="flex gap-3">
+                        <input type="text" id="input-2" placeholder="Typ je antwoord hier..." 
+                            class="flex-grow bg-slate-950/80 border border-red-700/60 rounded-lg px-4 py-2.5 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition">
+                        <button onclick="checkAnswer(2)" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-red-950 font-bold px-5 py-2.5 rounded-lg text-sm shadow-md transition transform active:scale-95 cursor-pointer">
+                            Controleer
+                        </button>
+                    </div>
+                    <p id="feedback-2" class="text-xs mt-2 hidden"></p>
+                </div>
+
+                <!-- Success State 2 -->
+                <div id="success-2" class="hidden mt-4 bg-emerald-950/60 border border-emerald-600/50 rounded-xl p-3 text-emerald-200 text-sm flex items-center gap-2">
+                    <span>🎉</span> <span>Uitstekend!</span>
+                </div>
+            </div>
+
+            <!-- Stanza 3 (Hidden Initially) -->
+            <div id="stanza-3" class="stanza-card hidden opacity-0 translate-y-4 bg-slate-900/80 border border-red-700/50 rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-amber-400 to-amber-600"></div>
+           
+                <div class="serif-title text-lg md:text-xl text-slate-100 space-y-3 leading-relaxed italic mb-6">
+                    <p>Naar de TU/e ga je iedere dag op en neer,<br>
+                    Om verder te gaan met het onderzoek, telkens weer.</p>
+                    <p>Soms <span class="text-amber-300 underline decoration-amber-500/50 decoration-2 font-normal not-italic font-sans px-1 rounded bg-amber-400/15">(reizen)</span> je voor dat werk zelfs naar Duitsland toe,<br>
+                    Druk met je PHD, en nooit te moe!</p>
+                </div>
+
+                <!-- Input Box for Stanza 3 -->
+                <div id="input-area-3" class="bg-red-950/40 border border-red-800/60 rounded-xl p-4 transition-all">
+                    <label for="input-3" class="block text-xs font-medium text-amber-200/90 mb-2">
+                        Vraag: Vervoeg <code class="bg-red-900 px-1.5 py-0.5 rounded text-amber-300">reizen</code> met "je" achter het werkwoord in de tegenwoordige tijd.
+                    </label>
+                    <div class="flex gap-3">
+                        <input type="text" id="input-3" placeholder="Typ je antwoord hier..." 
+                            class="flex-grow bg-slate-950/80 border border-red-700/60 rounded-lg px-4 py-2.5 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition">
+                        <button onclick="checkAnswer(3)" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-red-950 font-bold px-5 py-2.5 rounded-lg text-sm shadow-md transition transform active:scale-95 cursor-pointer">
+                            Controleer
+                        </button>
+                    </div>
+                    <p id="feedback-3" class="text-xs mt-2 hidden"></p>
+                </div>
+
+                <!-- Success State 3 -->
+                <div id="success-3" class="hidden mt-4 bg-emerald-950/60 border border-emerald-600/50 rounded-xl p-3 text-emerald-200 text-sm flex items-center gap-2">
+                    <span>🎉</span> <span>Geweldig! Het finale deel is onthuld!</span>
+                </div>
+            </div>
+
+            <!-- Stanza 4 / Final (Hidden Initially) -->
+            <div id="stanza-4" class="stanza-card hidden opacity-0 translate-y-4 bg-gradient-to-br from-red-900/90 via-slate-900 to-amber-950 border-2 border-amber-500/60 rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-2 h-full bg-amber-400"></div>
+
+                
+                <div class="serif-title text-xl md:text-2xl text-amber-100 space-y-4 leading-relaxed italic mb-6 text-center">
+                    <p class="font-bold text-amber-300">Pak je Cadeau nu maar uit!</p>
+                    <p class="text-lg">Als je jouw geluid aanzet hoor je een fluit. 🎶</p>
+                </div>
+
+                <div class="text-center pt-2">
+                    <button onclick="playFluteAndCelebrate()" class="bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-red-950 font-extrabold px-8 py-4 rounded-xl text-base shadow-xl transition transform hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-3 mx-auto">
+                        <span>🎵 Speel Fluit! 🎁</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full py-6 text-center text-xs text-red-300/60 border-t border-red-900/50 mt-12 bg-red-950/40">
+        <p>Heel veel liefs van Sinterklaas en Pieten 🧡</p>
+    </footer>
+
+    <!-- JavaScript Logic & Sound & Confetti -->
+    <script>
+        // Correct answers definition
+        const answers = {
+            1: ["rondneusde"], // Accept both standard past tense options just in case
+            2: ["verdient"],
+            3: ["reis"]
+        };
+
+        // Helper to normalize strings for comparison (lowercase, trimmed)
+        function normalize(str) {
+            return str.toLowerCase().trim();
+        }
+
+        // Check user answer for each stanza
+        function checkAnswer(step) {
+            const inputVal = document.getElementById(`input-${step}`).value;
+            const feedbackEl = document.getElementById(`feedback-${step}`);
+            const normalizedInput = normalize(inputVal);
+
+            const validOptions = answers[step];
+            const isCorrect = validOptions.some(opt => normalize(opt) === normalizedInput);
+
+            if (isCorrect) {
+                // Success styling & hiding input area
+                feedbackEl.classList.remove('hidden', 'text-red-400');
+                feedbackEl.classList.add('text-emerald-400');
+                feedbackEl.innerText = "Dat is helemaal correct!";
+
+                // Hide input box for this step to lock it
+                document.getElementById(`input-area-${step}`).style.display = 'none';
+                document.getElementById(`success-${step}`).classList.remove('hidden');
+
+                // Trigger small confetti burst
+                confetti({
+                    particleCount: 50,
+                    spread: 60,
+                    origin: { y: 0.7 }
+                });
+
+                // Reveal next stanza if available
+                const nextStep = step + 1;
+                const nextStanza = document.getElementById(`stanza-${nextStep}`);
+                if (nextStanza) {
+                    nextStanza.classList.remove('hidden');
+                    // Trigger smooth animation
+                    setTimeout(() => {
+                        nextStanza.classList.remove('opacity-0', 'translate-y-4');
+                    }, 50);
+
+                    // Smooth scroll to next stanza
+                    setTimeout(() => {
+                        nextStanza.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 200);
+                }
+            } else {
+                // Error styling
+                feedbackEl.classList.remove('hidden', 'text-emerald-400');
+                feedbackEl.classList.add('text-red-400');
+                feedbackEl.innerText = "Niet helemaal juist. Probeer het nog eens! (Tip: let op de vervoeging in de zin)";
+                
+                // Shake input box effect
+                const inputArea = document.getElementById(`input-area-${step}`);
+                inputArea.classList.add('animate-pulse');
+                setTimeout(() => inputArea.classList.remove('animate-pulse'), 500);
+            }
+        }
+
+        // Allow pressing Enter key to submit
+        for (let i = 1; i <= 3; i++) {
+            document.getElementById(`input-${i}`).addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkAnswer(i);
+                }
+            });
+        }
+
+        // Web Audio API Synthesized Flute Tune & Grand Celebration
+        function playFluteAndCelebrate() {
+            // Trigger massive confetti
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
+
+            // Play cute flute melody using Web Audio API
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                const ctx = new AudioContext();
+
+                // Simple flute-like melody notes (frequencies in Hz)
+                const notes = [
+                    { freq: 587.33, duration: 0.3 }, // D5
+                    { freq: 659.25, duration: 0.3 }, // E5
+                    { freq: 783.99, duration: 0.4 }, // G5
+                    { freq: 880.00, duration: 0.3 }, // A5
+                    { freq: 783.99, duration: 0.3 }, // G5
+                    { freq: 659.25, duration: 0.3 }, // E5
+                    { freq: 587.33, duration: 0.8 }  // D5
+                ];
+
+                let currentTime = ctx.currentTime;
+
+                notes.forEach(note => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    // Sine wave gives a smooth, flute-like tone
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(note.freq, currentTime);
+
+                    // Soft attack and release for flute sound
+                    gain.gain.setValueAtTime(0, currentTime);
+                    gain.gain.linearRampToValueAtTime(0.2, currentTime + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, currentTime + note.duration);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(currentTime);
+                    osc.stop(currentTime + note.duration);
+
+                    currentTime += note.duration + 0.05;
+                });
+            } catch (e) {
+                console.log("AudioContext not supported or blocked by browser policy.", e);
+            }
+        }
+    </script>
+</body>
+</html>
