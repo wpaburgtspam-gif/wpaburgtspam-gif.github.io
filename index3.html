@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Sinterklaas Big 5 Safari Quiz</title>
+    <!-- Tailwind CSS voor responsieve en moderne styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka voor speelse koppen en Inter voor goede leesbaarheid -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti voor een feestelijk effect bij goede antwoorden -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'],
+                    },
+                    colors: {
+                        sintRed: '#B91C1C',
+                        sintDarkRed: '#7F1D1D',
+                        sintGold: '#F59E0B',
+                        sintLightGold: '#FEF3C7',
+                        safariSand: '#FDF8F0',
+                        safariGreen: '#15803D',
+                        safariBrown: '#78350F',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Aangepaste patronen, mobiele touch-optimalisaties en animaties */
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            background-color: #FDF8F0;
+            background-image: radial-gradient(#F59E0B 0.75px, transparent 0.75px), radial-gradient(#B91C1C 0.75px, #FDF8F0 0.75px);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+            padding-bottom: calc(3rem + env(safe-area-inset-bottom));
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+
+        /* Voorkom automatisch inzoomen op iOS Safari bij tikken op invoervelden */
+        input[type="text"] {
+            font-size: 16px !important;
+        }
+
+        /* Safe-area ondersteuning voor telefoons met een notch of Dynamic Island */
+        .safe-top-header {
+            padding-top: env(safe-area-inset-top);
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.92) translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .animate-pop-in {
+            animation: popIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Perkament-stijl voor het Sinterklaasrijm met optimale mobiele leesbaarheid */
+        .parchment-card {
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            border: 2px solid #F59E0B;
+            box-shadow: 0 4px 15px -3px rgba(245, 158, 11, 0.25);
+        }
+
+        .rhyme-text {
+            font-size: clamp(0.92rem, 3.8vw, 1.05rem);
+            line-height: 1.55;
+            overflow-wrap: break-word;
+            word-break: normal;
+        }
+    </style>
+</head>
+<body class="text-stone-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Bovenste Sticky Voortgangsbalk met safe-area ondersteuning -->
+    <header class="sticky top-0 z-40 bg-sintRed text-white shadow-lg border-b-4 border-sintGold safe-top-header">
+        <div class="max-w-2xl mx-auto px-3.5 sm:px-4 py-2.5 sm:py-3">
+            <div class="flex items-center justify-between mb-1.5">
+                <div class="flex items-center gap-2 min-w-0">
+                    <!-- Mijter SVG icoon -->
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-sintGold shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L4 9v11a2 2 0 002 2h12a2 2 0 002-2V9l-8-7zm1 13h-2v-3H8v-2h3V7h2v3h3v2h-3v3z"/>
+                    </svg>
+                    <span class="font-display font-bold text-sm sm:text-lg tracking-wide truncate">Big 5 Safari Quiz</span>
+                </div>
+                <div class="flex items-center gap-1.5 bg-sintDarkRed px-2.5 sm:px-3 py-1 rounded-full border border-sintGold/40 shrink-0">
+                    <span class="text-xs sm:text-sm font-semibold text-amber-200">Gevonden:</span>
+                    <span id="progress-counter" class="font-display font-bold text-xs sm:text-base text-white">0 / 5</span>
+                </div>
+            </div>
+            
+            <!-- Voortgangsbalk -->
+            <div class="w-full bg-sintDarkRed rounded-full h-2.5 sm:h-3 overflow-hidden p-0.5 border border-sintGold/30">
+                <div id="progress-bar" class="bg-gradient-to-r from-amber-300 via-sintGold to-yellow-400 h-full rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hoofdinhoud -->
+    <main class="max-w-2xl w-full mx-auto px-3.5 sm:px-4 pt-4 sm:pt-8 flex-grow">
+        
+        <!-- Welkomstkaart -->
+        <section class="bg-white rounded-3xl shadow-xl border-2 border-amber-200 p-5 sm:p-8 mb-6 sm:mb-8 relative overflow-hidden">
+            <!-- Decoratieve hoekaccenten -->
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-sintRed/10 rounded-full"></div>
+            <div class="absolute -left-6 -bottom-6 w-20 h-20 bg-sintGold/15 rounded-full"></div>
+
+            <div class="relative z-10 text-center">
+                <div class="inline-flex items-center justify-center gap-2 bg-red-50 text-sintRed font-semibold text-xs sm:text-sm px-3.5 py-1.5 rounded-full border border-red-200 mb-3">
+                    <span>🦁</span>
+                    <span>Sinterklaas op Safari</span>
+                    <span>🎁</span>
+                </div>
+                <h1 class="font-display font-bold text-sintRed mb-2.5 leading-tight" style="font-size: clamp(1.5rem, 6.2vw, 2.25rem);">
+                    Vind jij de hele Big 5?
+                </h1>
+                <p class="text-stone-600 text-sm sm:text-base leading-relaxed max-w-lg mx-auto">
+                    Welkom speurneus! Sinterklaas en zijn Pieten zijn op safari gegaan. Beantwoord de <strong>5 vragen</strong> hieronder. Bij elk goed antwoord onthult de Sint een speciaal rijm met een leuk weetje over het dier!
+                </p>
+            </div>
+        </section>
+
+        <!-- Container voor de 5 Quiz Kaarten -->
+        <div id="quiz-container" class="space-y-5 sm:space-y-6">
+            <!-- De kaarten worden dynamisch geladen via JavaScript -->
+        </div>
+
+        <!-- Feestelijke Eindmelding (Verborgen totdat alle 5 vragen goed zijn) -->
+        <section id="victory-banner" class="hidden mt-8 sm:mt-10 bg-gradient-to-br from-sintRed via-red-700 to-sintDarkRed text-white rounded-3xl shadow-2xl border-4 border-sintGold p-5 sm:p-8 text-center animate-pop-in relative overflow-hidden">
+            <div class="relative z-10">
+                <div class="text-4xl sm:text-6xl mb-3 sm:mb-4">🏆🎉🎁</div>
+                <span class="inline-block bg-sintGold text-sintDarkRed font-display font-bold text-xs sm:text-sm uppercase tracking-wider px-4 py-1 rounded-full mb-3 shadow">
+                    Missie Volbracht! (5/5)
+                </span>
+                <h2 class="font-display text-xl sm:text-3xl font-bold mb-4 text-amber-100">
+                    De volledige Big 5 is verzameld!
+                </h2>
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5 border border-amber-300/30 mb-5 text-amber-50 font-medium italic rhyme-text space-y-1.5">
+                    <p>"Wat een geweldige speurneus ben jij vandaag gebleken,</p>
+                    <p>Alle vijf de dieren heb jij stuk voor stuk bekeken!</p>
+                    <p>De Sint en zijn Pieten zijn ontzettend trots op jou,</p>
+                    <p>Je hebt je cadeau verdiend, pak het maar open gauw!"</p>
+                </div>
+                <button onclick="triggerConfettiBurst()" class="w-full sm:w-auto min-h-[50px] bg-sintGold hover:bg-amber-400 text-sintDarkRed font-display font-bold py-3.5 px-6 rounded-2xl shadow-lg transform transition active:scale-[0.98] cursor-pointer">
+                    Vier het feestje nog een keer! 🎊
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-2xl mx-auto px-4 mt-10 text-center text-stone-500 text-xs sm:text-sm">
+        <p>Gemaakt met ❤️ van Sinterklaas & de Safari Pieten</p>
+    </footer>
+
+    <script>
+        /**
+         * Quiz data voor de Big 5 met alle vragen, geaccepteerde antwoorden,
+         * vriendelijke hints en het 4-regelige Sinterklaasrijm met dierenfeit.
+         */
+        const quizData = [
+            {
+                id: 1,
+                animal: "Mysterieuze Sporen",
+                revealedAnimal: "De Neushoorn",
+                emoji: "🐾",
+                revealedEmoji: "🦏",
+                question: "Van welk dier zie jij de voetstappen?",
+                placeholder: "Typ hier de naam van het dier...",
+                acceptedAnswers: ["neushoorn", "de neushoorn", "een neushoorn"],
+                hint: "Oei, dat is nog niet helemaal goed! Kijk nog eens goed naar die grote ronde poten met drie tenen... Welk groot grijs dier uit de Big 5 laat zulke sporen achter?",
+                rhyme: [
+                    "Goed geraden, dat spoor was van een neushoorn, heel groot!",
+                    "Wist je dat zijn hoorn niet van bot is, maar groeit als je nagels, idioot?",
+                    "Hij ziet niet zo scherp, dus hij loopt soms wat mis,",
+                    "Maar zijn reuk is zo goed dat hij precies weet waar jij is!"
+                ]
+            },
+            {
+                id: 2,
+                animal: "De Olifant",
+                emoji: "🐘",
+                question: "Hoeveel olifanten staan op de doos?",
+                placeholder: "Typ een getal (bijv. 3 of drie)...",
+                acceptedAnswers: ["7", "zeven", "7 olifanten", "zeven olifanten"],
+                hint: "Tel nog maar eens goed met de Telpiet mee! Kijk op alle kanten van de doos hoeveel grijze slurven je ziet.",
+                rhyme: [
+                    "Zeven olifanten, je hebt ze keurig geteld!",
+                    "Met veertigduizend spieren in zijn slurf is dit dier een echte held.",
+                    "Hij vergeet nooit een vriend, een waterpoel of een pad,",
+                    "Zelfs Sinterklaas is jaloers op zo'n geheugen, wist je dat?"
+                ]
+            },
+            {
+                id: 3,
+                animal: "De Luipaard / Jaguar",
+                emoji: "🐆",
+                question: "Welke code staat op de jaguar?",
+                placeholder: "Typ de 3 letters van de code...",
+                acceptedAnswers: ["tpt"],
+                hint: "Bijna! Pak je vergrootglas erbij en kijk nog eens heel goed naar de vlekken en de code op de jaguar (3 letters).",
+                rhyme: [
+                    "TPT is de code, wat heb jij goed gekeken!",
+                    "Deze gevlekte jager kan als de beste in bomen klimmen en zich verstoppen in streken.",
+                    "Met een sprong van zes meter en een beet supersterk,",
+                    "Doet hij 's nachts in het donker stilletjes zijn werk!"
+                ]
+            },
+            {
+                id: 4,
+                animal: "De Leeuw",
+                emoji: "🦁",
+                question: "Wat is de leeuw aan het eten?",
+                placeholder: "Typ hier welk dier het is...",
+                acceptedAnswers: ["giraf", "een giraf", "de giraf", "giraffe", "een giraffe", "de giraffe"],
+                hint: "Hmm, de Sint denkt dat het iets anders is! Kijk goed naar de prooi van de leeuw... Het is een dier met een hele lange nek en vlekken.",
+                rhyme: [
+                    "Een giraf als maaltijd, dat heb jij goed gezien!",
+                    "De leeuw is de koning van de savanne, dat wist je misschien?",
+                    "Zijn machtige brul hoor je wel acht kilometer ver,",
+                    "En hij slaapt wel twintig uur per dag onder elke ster!"
+                ]
+            },
+            {
+                id: 5,
+                animal: "De Buffel",
+                emoji: "🐃",
+                question: "Waar staat deze Buffel?",
+                placeholder: "Typ de naam van het gebied...",
+                acceptedAnswers: ["sabi sand", "sabi sands", "sabisand", "sabisands", "in sabi sand", "in sabi sands"],
+                hint: "Nog één laatste zetje! Kijk goed waar deze stoere buffel zich bevindt. Het bestaat uit twee woorden en begint met een S...",
+                rhyme: [
+                    "Sabi Sand is helemaal goed, wat een kennis van de natuur!",
+                    "De Kaapse buffel is sterk en staat voor zijn kudde in het vuur.",
+                    "Zelfs een leeuw gaat opzij als deze reus naar hem staart,",
+                    "Want samen zijn ze onverslaanbaar en voor niemand vervaard!"
+                ]
+            }
+        ];
+
+        // Bijhouden welke vragen al goed zijn beantwoord
+        const solvedQuestions = new Set();
+
+        /**
+         * Initialiseert en rendert alle 5 quiz-kaarten op het scherm
+         */
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizData.forEach((item, index) => {
+                const card = document.createElement('article');
+                card.id = `card-${item.id}`;
+                card.className = "bg-white rounded-3xl shadow-md border-2 border-stone-200 transition-all duration-300 overflow-hidden scroll-mt-24";
+
+                card.innerHTML = `
+                    <div class="p-4 sm:p-7">
+                        <!-- Kaart Header: Nummer, Dier Emoji & Status Badge -->
+                        <div class="flex items-center justify-between gap-2 mb-3.5 sm:mb-4">
+                            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                                <div id="emoji-${item.id}" class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-2xl sm:text-3xl shadow-sm shrink-0">
+                                    ${item.emoji}
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-safariBrown/80 block">
+                                        Dier ${item.id} van 5
+                                    </span>
+                                    <h2 id="title-${item.id}" class="font-display font-bold text-base sm:text-xl text-stone-800 truncate">
+                                        ${item.animal}
+                                    </h2>
+                                </div>
+                            </div>
+
+                            <!-- Status Badge -->
+                            <span id="badge-${item.id}" class="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 text-stone-500 border border-stone-200 shrink-0">
+                                <span>🔍</span>
+                                <span>Nog te gaan</span>
+                            </span>
+                        </div>
+
+                        <!-- De Vraag -->
+                        <p class="text-[15px] sm:text-lg font-semibold text-stone-900 mb-3.5 sm:mb-4 bg-safariSand p-3.5 rounded-2xl border border-amber-200/70 leading-snug">
+                            ${item.question}
+                        </p>
+
+                        <!-- Mobielvriendelijk Antwoord Formulier -->
+                        <form id="form-${item.id}" onsubmit="handleAnswer(event, ${item.id})" class="flex flex-col min-[480px]:flex-row gap-2.5">
+                            <input 
+                                type="text" 
+                                id="input-${item.id}" 
+                                placeholder="${item.placeholder}"
+                                inputmode="text"
+                                enterkeyhint="send"
+                                autocapitalize="words"
+                                autocomplete="off"
+                                autocorrect="off"
+                                spellcheck="false"
+                                class="w-full min-h-[50px] px-4 py-3 rounded-2xl border-2 border-stone-300 focus:border-sintRed focus:ring-4 focus:ring-sintRed/15 outline-none text-base font-medium transition-all bg-white"
+                                required
+                            />
+                            <button 
+                                type="submit" 
+                                id="btn-${item.id}"
+                                class="w-full min-[480px]:w-auto min-h-[50px] shrink-0 bg-sintRed hover:bg-sintDarkRed text-white font-display font-bold px-6 py-3 rounded-2xl shadow-md hover:shadow-lg transform transition active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 text-base"
+                            >
+                                <span>Controleer</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                        </form>
+
+                        <!-- Foutmelding / Hint Box (Standaard verborgen) -->
+                        <div id="hint-${item.id}" class="hidden mt-3.5 p-3.5 rounded-2xl bg-red-50 border border-red-200 text-sintDarkRed text-sm flex items-start gap-2.5">
+                            <span class="text-lg leading-none mt-0.5 shrink-0">🎅</span>
+                            <p class="font-medium leading-relaxed">${item.hint}</p>
+                        </div>
+
+                        <!-- Sinterklaas Rijm & Weetje Box (Wordt getoond bij goed antwoord) -->
+                        <div id="rhyme-${item.id}" class="hidden mt-4 sm:mt-5 parchment-card rounded-2xl p-4 sm:p-5 relative overflow-hidden scroll-mt-24">
+                            <div class="flex items-center gap-2 mb-2 text-safariBrown font-display font-bold text-sm sm:text-base">
+                                <span>📜</span>
+                                <span>Sinterklaasrijm & Dierenweetje:</span>
+                            </div>
+                            <div class="space-y-1.5 text-stone-800 font-medium italic rhyme-text">
+                                ${item.rhyme.map(line => `<p>${line}</p>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        /**
+         * Controleert het ingevulde antwoord van de gebruiker
+         */
+        function handleAnswer(event, questionId) {
+            event.preventDefault();
+
+            // Als de vraag al is opgelost, doe niets
+            if (solvedQuestions.has(questionId)) return;
+
+            const item = quizData.find(q => q.id === questionId);
+            const inputEl = document.getElementById(`input-${questionId}`);
+            const hintEl = document.getElementById(`hint-${questionId}`);
+            const rhymeEl = document.getElementById(`rhyme-${questionId}`);
+            const badgeEl = document.getElementById(`badge-${questionId}`);
+            const cardEl = document.getElementById(`card-${questionId}`);
+            const btnEl = document.getElementById(`btn-${questionId}`);
+
+            // Maak invoer schoon: kleine letters, geen onnodige spaties of leestekens
+            const userAnswer = inputEl.value
+                .trim()
+                .toLowerCase()
+                .replace(/[.,!?]/g, '');
+
+            if (!userAnswer) return;
+
+            // Controleer of het antwoord overeenkomt met een van de geaccepteerde antwoorden
+            const isCorrect = item.acceptedAnswers.some(ans => ans.toLowerCase() === userAnswer);
+
+            if (isCorrect) {
+                // Markeer als opgelost
+                solvedQuestions.add(questionId);
+
+                // Sluit het mobiele schermtoetsenbord zodat het rijmpje goed zichtbaar is
+                inputEl.blur();
+
+                // Verberg eventuele eerdere hint
+                hintEl.classList.add('hidden');
+
+                // Update styling van de kaart naar "Voltooid"
+                cardEl.classList.remove('border-stone-200');
+                cardEl.classList.add('border-safariGreen', 'ring-4', 'ring-safariGreen/10');
+
+                // Update input en knop naar vergrendelde groene staat
+                inputEl.disabled = true;
+                inputEl.classList.remove('border-stone-300', 'border-red-400', 'bg-white');
+                inputEl.classList.add('border-green-300', 'bg-green-50', 'text-green-900', 'font-bold');
+
+                btnEl.disabled = true;
+                btnEl.classList.remove('bg-sintRed', 'hover:bg-sintDarkRed', 'cursor-pointer');
+                btnEl.classList.add('bg-safariGreen', 'cursor-default');
+                btnEl.innerHTML = `<span>Goed!</span> <span>✅</span>`;
+
+                // Update Badge
+                badgeEl.className = "inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-safariGreen border border-green-300 shrink-0";
+                badgeEl.innerHTML = `<span>✅</span><span>Verzameld!</span>`;
+
+                // Onthul verborgen dier-naam en emoji indien ingesteld (zoals bij de neushoorn)
+                if (item.revealedAnimal) {
+                    document.getElementById(`title-${questionId}`).textContent = item.revealedAnimal;
+                }
+                if (item.revealedEmoji) {
+                    document.getElementById(`emoji-${questionId}`).textContent = item.revealedEmoji;
+                }
+
+                // Toon het Sinterklaasrijm met animatie
+                rhymeEl.classList.remove('hidden');
+                rhymeEl.classList.add('animate-pop-in');
+
+                // Scroll het vrijgespeelde rijmpje soepel in beeld op mobiel
+                setTimeout(() => {
+                    rhymeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 150);
+
+                // Kleine confetti burst bij elk goed antwoord
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 45,
+                        spread: 60,
+                        origin: { y: 0.7 },
+                        colors: ['#B91C1C', '#F59E0B', '#15803D']
+                    });
+                }
+
+                // Werk de voortgangsbalk bij
+                updateProgress();
+
+            } else {
+                // Fout antwoord: toon vriendelijke Sinterklaas-hint en schud het invoerveld
+                hintEl.classList.remove('hidden');
+                hintEl.classList.remove('animate-pop-in');
+                void hintEl.offsetWidth; // Forceer reflow voor herstarten animatie
+                hintEl.classList.add('animate-pop-in');
+
+                inputEl.classList.remove('border-stone-300');
+                inputEl.classList.add('border-red-400', 'animate-shake');
+                
+                setTimeout(() => {
+                    inputEl.classList.remove('animate-shake');
+                }, 400);
+
+                inputEl.focus();
+            }
+        }
+
+        /**
+         * Werkt de voortgangsbalk bij en toont het eindscherm bij 5/5
+         */
+        function updateProgress() {
+            const total = quizData.length;
+            const current = solvedQuestions.size;
+            const percentage = (current / total) * 100;
+
+            document.getElementById('progress-counter').textContent = `${current} / ${total}`;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+
+            // Als alle 5 vragen zijn opgelost
+            if (current === total) {
+                const victoryBanner = document.getElementById('victory-banner');
+                victoryBanner.classList.remove('hidden');
+
+                // Groot feestelijk confetti-vuurwerk en scroll naar beneden
+                setTimeout(() => {
+                    triggerConfettiBurst();
+                    victoryBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 600);
+            }
+        }
+
+        /**
+         * Feestelijke confetti explosie voor de overwinning
+         */
+        function triggerConfettiBurst() {
+            if (typeof confetti !== 'function') return;
+
+            const duration = 2500;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#B91C1C', '#F59E0B', '#FDE047', '#15803D']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#B91C1C', '#F59E0B', '#FDE047', '#15803D']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // Start de quiz zodra de pagina is geladen
+        window.addEventListener('DOMContentLoaded', renderQuiz);
+    </script>
+</body>
+</html>
